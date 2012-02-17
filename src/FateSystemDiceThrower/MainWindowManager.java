@@ -18,11 +18,17 @@
  */
 package FateSystemDiceThrower;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -33,43 +39,101 @@ import javax.swing.*;
 public class MainWindowManager {
     
     static JLabel jlbOutput;
+    //static BufferedImage image1,image2,image3,image4;
+    
+    static JFrame aJFrame;                              //Principal JFrame
+    static Container aContentPanel = null;              //contentPane object for this aJFrame
+    static JPanel dicePanelGrid = new JPanel();
+    
+    static MainWindowManager anInstance = new MainWindowManager();
     
     public static void initializeMainWindow(){
         
-        final JFrame myJFrame = new JFrame("FateDiceTrower");
-        myJFrame.setSize(200,200);
+        aJFrame = new JFrame("FateDiceTrower");
+        aJFrame.setSize(300,400);                               //width x height
         
-        final Container cp = myJFrame.getContentPane();
+        aContentPanel = aJFrame.getContentPane();
+        aContentPanel.setLayout(new BorderLayout());            //type of layout
+        
+        dicePanelGrid.setLayout(new GridLayout(1,4));           //four dice
+        
+        
+        aContentPanel.add(dicePanelGrid,BorderLayout.NORTH);
+        
+        //Date c = new Date();
+        /*
+        Calendar c = Calendar.getInstance();
+        DateFormat d = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT);
+        aContentPanel.add(new JPanel().add(new JLabel(""+d.format(new Date()))),BorderLayout.NORTH);
+        */
         
         final JPanel panel = new JPanel();
-        cp.add(panel);
-        panel.setLayout(new GridLayout(4,2));
+        aContentPanel.add(panel);
+        
+        panel.setLayout(new GridLayout(3,3));
         
         jlbOutput = new JLabel("--",SwingConstants.CENTER);
         jlbOutput.setHorizontalTextPosition(JLabel.CENTER);
         jlbOutput.setBackground(Color.WHITE);
         jlbOutput.setOpaque(true);
-        panel.add(jlbOutput);
+        //panel.add(jlbOutput);
+        aContentPanel.add(jlbOutput,BorderLayout.SOUTH);
         
-        for (int count = 0; count < 11; count++){
-            JButton button1 = new JButton(""+count);
-            final int y = count;
-            ActionListener al = new ActionListener() {
+        for (int count = 0; count < 9; count++){
+            
+            JButton aButton = new JButton(""+count);        //Skill button
+            final int skillLevel = count;                   //Final copy of the skill level
+            
+            ActionListener anActionListener = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //myJFrame.setVisible(false);
-                    int res = FateSystemUtilities.trowDices(y);
-                    jlbOutput.setText(""+res);
+                    int res = FateSystemUtilities.trowDices(skillLevel);    //Throw the dice
+                    dicePanelGrid.removeAll();                              //Remove old image
+                    int[] g = FateSystemUtilities.getResultsArr();          //Get each dice value
+                    for(int f: g){
+                        anInstance.foo(f);                     //Draw the dice
+                    }
+                    
+                    jlbOutput.setText("Skill: "+skillLevel+"     Tot: "+res);
                 }
             };
-            button1.addActionListener(al);
-            panel.add(button1);
+            aButton.addActionListener(anActionListener);
+            panel.add(aButton);
         }
         
+        anInstance.foo(0);
+        anInstance.foo(0);
+        anInstance.foo(0);
+        anInstance.foo(0);
+        
         //Puts the window in the middle of the screen.
-        myJFrame.setLocationRelativeTo(null);
-        myJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myJFrame.setVisible(true);
+        aJFrame.setLocationRelativeTo(null);
+        aJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        aJFrame.setVisible(true);
+        
+    }
+    
+    public void foo(final int x){
+        
+        BufferedImage image = null;
+        String path = "/FateSystemDiceThrower/resources/";  //TODO: Better
+        
+        switch(x){
+            case -1: path+="minus.gif"; break;
+            default: ;
+            case 0: path+="nothing.gif"; break;
+            case 1: path+="plus.gif"; break;
+        }
+        
+        try {
+            image = ImageIO.read(this.getClass().getResourceAsStream(path));
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindowManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        JLabel picLabel = new JLabel(new ImageIcon(image));
+        dicePanelGrid.add(new JPanel().add(picLabel));
     }
     
 }

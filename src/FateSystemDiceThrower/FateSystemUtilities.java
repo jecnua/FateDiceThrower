@@ -25,6 +25,8 @@ package FateSystemDiceThrower;
  */
 public class FateSystemUtilities {
     
+    static private int[] resultsArr = {0,0,0,0};
+    
     public static int trowDices(int skillPower){
         //int skillPower = 0;
         int minDiceValue = -1;
@@ -36,12 +38,31 @@ public class FateSystemUtilities {
         */
         int diceTrowsResults = 0;
         for (int count = 0; count < 4; count++){
-            diceTrowsResults += minDiceValue + (int)(Math.random() * ((maxDiceValue - minDiceValue) + 1));
+            
+            int thisThrow = minDiceValue + (int)(Math.random() * ((maxDiceValue - minDiceValue) + 1));
+            
+            getResultsArr()[count] = thisThrow;
+            
+            diceTrowsResults += thisThrow;
         }
 
         int results = skillPower + diceTrowsResults;
         //System.out.println(diceTrowsResults);
         return results;
+    }
+
+    /**
+     * @return the resultsArr
+     */
+    public static int[] getResultsArr() {
+        return resultsArr;
+    }
+
+    /**
+     * @param aResultsArr the resultsArr to set
+     */
+    public static void setResultsArr(int[] aResultsArr) {
+        resultsArr = aResultsArr;
     }
     
 }
