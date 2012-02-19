@@ -18,9 +18,6 @@
  */
 package FateSystemDiceThrower;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author      jecnua <jecnua@gmail.com>
  * @version     1.0
@@ -42,7 +39,7 @@ public class FateDiceThrower {
         }
         */
         
-        MainWindowManager.initializeMainWindow();
+        new DiceThrowerMainWindows().initializeMainWindow();
     }
     
 }

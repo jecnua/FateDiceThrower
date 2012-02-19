@@ -36,29 +36,31 @@ import javax.swing.*;
  * @version     1.0
  * @since       2012-01-01
  */
-public class MainWindowManager {
+public class DiceThrowerMainWindows {
     
-    static JLabel jlbOutput;
-    //static BufferedImage image1,image2,image3,image4;
     
-    static JFrame aJFrame;                              //Principal JFrame
-    static Container aContentPanel = null;              //contentPane object for this aJFrame
-    static JPanel dicePanelGrid = new JPanel();
+    private JLabel jlbOutput;
+    private JFrame aJFrame;                              //Main JFrame
+    private Container contentPanelMainJFrame = null;     //Container object for this aJFrame
+    private static JPanel dicePanelGrid = new JPanel();
+    private static DiceThrowerMainWindows anInstance = new DiceThrowerMainWindows();
+    //private static BufferedImage image1,image2,image3,image4;
     
-    static MainWindowManager anInstance = new MainWindowManager();
     
-    public static void initializeMainWindow(){
+    public void initializeMainWindow(){
+        
+        //Test
         
         aJFrame = new JFrame("FateDiceTrower");
         aJFrame.setSize(300,400);                               //width x height
         
-        aContentPanel = aJFrame.getContentPane();
-        aContentPanel.setLayout(new BorderLayout());            //type of layout
+        contentPanelMainJFrame = aJFrame.getContentPane();
+        contentPanelMainJFrame.setLayout(new BorderLayout());            //type of layout
         
         dicePanelGrid.setLayout(new GridLayout(1,4));           //four dice
         
         
-        aContentPanel.add(dicePanelGrid,BorderLayout.NORTH);
+        contentPanelMainJFrame.add(dicePanelGrid,BorderLayout.NORTH);
         
         //Date c = new Date();
         /*
@@ -68,7 +70,7 @@ public class MainWindowManager {
         */
         
         final JPanel panel = new JPanel();
-        aContentPanel.add(panel);
+        contentPanelMainJFrame.add(panel);
         
         panel.setLayout(new GridLayout(3,3));
         
@@ -77,7 +79,7 @@ public class MainWindowManager {
         jlbOutput.setBackground(Color.WHITE);
         jlbOutput.setOpaque(true);
         //panel.add(jlbOutput);
-        aContentPanel.add(jlbOutput,BorderLayout.SOUTH);
+        contentPanelMainJFrame.add(jlbOutput,BorderLayout.SOUTH);
         
         for (int count = 0; count < 9; count++){
             
@@ -89,10 +91,10 @@ public class MainWindowManager {
                 public void actionPerformed(ActionEvent e) {
                     //myJFrame.setVisible(false);
                     int res = FateSystemUtilities.trowDices(skillLevel);    //Throw the dice
-                    dicePanelGrid.removeAll();                              //Remove old image
+                    DiceThrowerMainWindows.dicePanelGrid.removeAll();       //Remove old image
                     int[] g = FateSystemUtilities.getResultsArr();          //Get each dice value
                     for(int f: g){
-                        anInstance.foo(f);                     //Draw the dice
+                        DiceThrowerMainWindows.anInstance.showDices(f);     //Draw the dice
                     }
                     
                     jlbOutput.setText("Skill: "+skillLevel+"     Tot: "+res);
@@ -102,10 +104,10 @@ public class MainWindowManager {
             panel.add(aButton);
         }
         
-        anInstance.foo(0);
-        anInstance.foo(0);
-        anInstance.foo(0);
-        anInstance.foo(0);
+        anInstance.showDices(0);
+        anInstance.showDices(0);
+        anInstance.showDices(0);
+        anInstance.showDices(0);
         
         //Puts the window in the middle of the screen.
         aJFrame.setLocationRelativeTo(null);
@@ -114,7 +116,7 @@ public class MainWindowManager {
         
     }
     
-    public void foo(final int x){
+    public void showDices(final int x){
         
         BufferedImage image = null;
         String path = "/FateSystemDiceThrower/resources/";  //TODO: Better
@@ -129,7 +131,7 @@ public class MainWindowManager {
         try {
             image = ImageIO.read(this.getClass().getResourceAsStream(path));
         } catch (IOException ex) {
-            Logger.getLogger(MainWindowManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DiceThrowerMainWindows.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         JLabel picLabel = new JLabel(new ImageIcon(image));
