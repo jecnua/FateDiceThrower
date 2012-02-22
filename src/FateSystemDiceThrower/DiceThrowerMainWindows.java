@@ -49,8 +49,6 @@ public class DiceThrowerMainWindows {
     
     public void initializeMainWindow(){
         
-        //Test
-        
         aJFrame = new JFrame("FateDiceTrower");
         aJFrame.setSize(300,400);                               //width x height
         
